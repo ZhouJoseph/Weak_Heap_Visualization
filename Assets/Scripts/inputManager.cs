@@ -15,13 +15,14 @@ public class inputManager : MonoBehaviour
     public int input, dec1, dec2;
     System.String inputstr, dec1str, dec2str;
     public GameObject list;
+    public GameObject tree;
     // Start is called before the first frame update
     void Start()
     {
         addNode.onClick.AddListener(() => AddNode(input));
         decreaseBy.onClick.AddListener(() => decrease(dec1, dec2));
 
-        currposition = new Vector3(-2.5f, 0f, -0.1f);
+        currposition = new Vector3(-9.5f, -2f, -0.1f);
         
     }
 
@@ -38,6 +39,8 @@ public class inputManager : MonoBehaviour
         input = Convert.ToInt32(inputstr);
         //Debug.Log("Adding node " + input);
         list.GetComponent<list>().startinsert(input, currposition);
+        tree.GetComponent<tree>().insert(input);
+
         currposition += new Vector3(1f, 0, 0);
     }
 
