@@ -21,7 +21,7 @@ public class inputManager : MonoBehaviour
     {
         addNode.onClick.AddListener(() => AddNode(input));
         decreaseBy.onClick.AddListener(() => decrease(dec1, dec2));
-
+        extractMin.onClick.AddListener(() => ExtractMin());
         currposition = new Vector3(-9.5f, -2f, -0.1f);
         
     }
@@ -49,6 +49,10 @@ public class inputManager : MonoBehaviour
         dec1 = Convert.ToInt32(dec1str);
         dec2 = Convert.ToInt32(dec2str);
         list.GetComponent<list>().startdecrease(dec1, dec2);
-        
+    }
+
+    void ExtractMin() {
+        list.GetComponent<list>().startextractMin();
+        currposition -= new Vector3(1f, 0, 0);
     }
 }
