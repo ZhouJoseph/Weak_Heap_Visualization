@@ -39,7 +39,7 @@ public class inputManager : MonoBehaviour
         input = Convert.ToInt32(inputstr);
         //Debug.Log("Adding node " + input);
         list.GetComponent<list>().startinsert(input, currposition);
-        tree.GetComponent<tree>().insert(input);
+        tree.GetComponent<tree>().startinsert(input);
 
         currposition += new Vector3(1f, 0, 0);
     }

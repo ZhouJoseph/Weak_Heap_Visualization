@@ -19,12 +19,13 @@ public class tree : MonoBehaviour
 
         node = GameObject.Find("myNode");
         
-        
-
-        
-        
     }
-    
+
+    internal void startinsert(int data)
+    {
+        StartCoroutine(insert(data));
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -41,7 +42,20 @@ public class tree : MonoBehaviour
         nextpos = new Vector3(x - (float)(horiz_shift/(Math.Pow(2,h-1))), y - vert_shift, z);
     }
 
-    internal void insert(int data)
+    int findDP(int currindex)
+    {
+        int curr = currindex;
+        while ((curr % 2) == treerep[curr / 2].GetComponent<nodeControl>().reversebit && curr != 0)
+        {
+            curr /= 2;
+        }
+        curr /= 2;
+        return curr;
+    }
+
+
+
+    internal IEnumerator insert(int data)
     {
         Debug.Log("here");
         //get position of new node
@@ -53,67 +67,97 @@ public class tree : MonoBehaviour
             newNode.GetComponent<nodeControl>().data = data;
             treerep.Add(newNode);
 
-            return;
+            yield return new WaitForSeconds(1);
         }
+        else {
+            GameObject parent = treerep[treerep.Count / 2];
+            float x = parent.transform.position.x;
+            float y = parent.transform.position.y;
+            float z = parent.transform.position.z;
+            int haveRight = parent.GetComponent<nodeControl>().haver;
+            int haveLeft = parent.GetComponent<nodeControl>().havel;
+            double h = Math.Ceiling(Math.Log(treerep.Count + 1, 2));
 
-        GameObject parent = treerep[treerep.Count / 2];
-        float x = parent.transform.position.x;
-        float y = parent.transform.position.y;
-        float z = parent.transform.position.z;
-        int haveRight = parent.GetComponent<nodeControl>().haver;
-        int haveLeft = parent.GetComponent<nodeControl>().havel;
-        double h = Math.Ceiling(Math.Log(treerep.Count + 1, 2));
-
-        if (treerep.Count == 1)
-        {
-            caseRight(x,y,z,h);
-            parent.GetComponent<nodeControl>().haver = 1;
-        }
-
-        else
-        {
-            if (parent.GetComponent<nodeControl>().reversebit == 1)
+            if (treerep.Count == 1)
             {
-                if (haveRight == 1)
-                {
-                    //new = left
-                    parent.GetComponent<nodeControl>().havel = 1;
-                    caseLeft(x,y,z,h);
-                }
-                else
-                {
-                    //new = right
-                    parent.GetComponent<nodeControl>().haver = 1;
-                    caseRight(x,y,z,h);
-                    
-                }
+                caseRight(x, y, z, h);
+                parent.GetComponent<nodeControl>().haver = 1;
+                parent.GetComponent<nodeControl>().right = node;
             }
+
             else
             {
-                if (haveLeft == 1)
+                if (parent.GetComponent<nodeControl>().reversebit == 1)
                 {
-                    //new = left
-                    parent.GetComponent<nodeControl>().haver = 1;
-                    caseRight(x,y,z,h);
+                    if (haveRight == 1)
+                    {
+                        //new = left
+                        parent.GetComponent<nodeControl>().havel = 1;
+                        parent.GetComponent<nodeControl>().left = node;
+                        caseLeft(x, y, z, h);
+                    }
+                    else
+                    {
+                        //new = right
+                        parent.GetComponent<nodeControl>().haver = 1;
+                        parent.GetComponent<nodeControl>().right = node;
+                        caseRight(x, y, z, h);
+
+                    }
                 }
                 else
                 {
-                    parent.GetComponent<nodeControl>().havel = 1;
-                    //new = right
-                    caseLeft(x,y,z,h);
+                    if (haveLeft == 1)
+                    {
+                        //new = right
+                        parent.GetComponent<nodeControl>().haver = 1;
+                        parent.GetComponent<nodeControl>().right = node;
+                        caseRight(x, y, z, h);
+                    }
+                    else
+                    {
+                        parent.GetComponent<nodeControl>().havel = 1;
+                        parent.GetComponent<nodeControl>().left = node;
+                        //new = left
+                        caseLeft(x, y, z, h);
+                    }
+                }
+
+            }
+
+
+            newNode = Instantiate(node, nextpos, Quaternion.identity);
+            newNode.transform.parent = parent.transform;
+            newNode.GetComponent<nodeControl>().data = data;
+            treerep.Add(newNode);
+            Debug.Log(nextpos);
+
+            int currindex = 0;
+            if (treerep.Count > 1)
+            {
+                currindex = treerep.Count - 1;
+                while (currindex > 0)
+                {
+
+                    int dp = findDP(currindex);
+
+                    if (!node.GetComponent<nodeControl>().join(treerep[currindex], treerep[dp]))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        currindex = dp;
+                        yield return new WaitForSeconds(1);
+                    }
                 }
             }
 
         }
 
-        
-        newNode = Instantiate(node, nextpos, Quaternion.identity);
-        newNode.GetComponent<nodeControl>().data = data;
-        treerep.Add(newNode);
-        Debug.Log(nextpos);
 
-        
+
 
     }
-    
+
 }

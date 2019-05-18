@@ -7,11 +7,12 @@ public class nodeControl : MonoBehaviour
 {
     public int data, reversebit, havel, haver;
     public Sprite l, r;
-    private GameObject right;
-    private GameObject left;
+    public GameObject right;
+    public GameObject left;
     private SpriteRenderer sr;
     public TMP_Text text;
-
+    public bool yellow = false;
+    private float timer = 1;
 
 
     // Start is called before the first frame update
@@ -25,19 +26,62 @@ public class nodeControl : MonoBehaviour
     void Update()
     {
         text.text = data.ToString();
-
-        /*
-        if (havel == 1) { leftarrow.sprite = l; }
-        else if (havel == 0) { leftarrow.sprite = null; }
-        if (haver == 1) { rightarrow.sprite = r; }
-        else if (haver == 0) { rightarrow.sprite = null; }
-        */
+        if (yellow && timer > 0)
+        {
+            sr.color = Color.yellow;
+            timer -= Time.deltaTime;
+            if (timer < 0)
+            {
+                timer = 1;
+                yellow = false;
+            }
+        }
+        else reColor();
     }
 
-    void join(Node self, Node other)
+    void highlight()
     {
-        SpriteRenderer othersr = other.GetComponent<SpriteRenderer>();
-        sr.color = Color.yellow;
-        othersr.color = Color.yellow;
+        yellow = true;
+    }
+
+    void reColor()
+    {
+        if (reversebit == 1) { sr.color = Color.grey; }
+        else if (reversebit == 0) { sr.color = Color.white; }
+    }
+
+
+    internal bool join(GameObject gameObject, GameObject other)
+    {
+
+        int otherdata = other.GetComponent<nodeControl>().data;
+        int selfdata = gameObject.GetComponent<nodeControl>().data;
+        gameObject.GetComponent<nodeControl>().highlight();
+        other.GetComponent<nodeControl>().highlight();
+        Debug.Log("data = " + data);
+        Debug.Log(" other = " + otherdata);
+        if (selfdata < otherdata)
+        {
+            int temp = selfdata;
+            gameObject.GetComponent<nodeControl>().data = otherdata;
+            other.GetComponent<nodeControl>().data = temp;
+            Debug.Log("swapped");
+            gameObject.GetComponent<nodeControl>().reversebit = 1 - gameObject.GetComponent<nodeControl>().reversebit;
+
+            reColor();
+            other.GetComponent<nodeControl>().reColor();
+            return true;
+
+        }
+
+        else
+        {
+            Debug.Log("?????");
+            reColor();
+            other.GetComponent<nodeControl>().reColor();
+
+            return false;
+        }
+
     }
 }

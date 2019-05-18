@@ -67,8 +67,6 @@ public class list : MonoBehaviour
                     currindex = dp;
                     yield return new WaitForSeconds(1);
                 }
-
-
             }
         }
     }
