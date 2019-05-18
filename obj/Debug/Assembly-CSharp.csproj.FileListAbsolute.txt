@@ -1,0 +1,2 @@
+D:\Unity Games\Weak Heap Visualization\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
+D:\Unity Games\Weak Heap Visualization\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache
