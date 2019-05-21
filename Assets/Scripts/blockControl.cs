@@ -52,14 +52,14 @@ public class blockControl : MonoBehaviour
         int selfdata = gameObject.GetComponent<blockControl>().data;
         gameObject.GetComponent<blockControl>().highlight();
         other.GetComponent<blockControl>().highlight();
-        Debug.Log("data = " + data);
-        Debug.Log(" other = " + otherdata);
+        //Debug.Log("data = " + data);
+        //Debug.Log(" other = " + otherdata);
         if (selfdata < otherdata)
         {
             int temp = selfdata;
             gameObject.GetComponent<blockControl>().data = otherdata;
             other.GetComponent<blockControl>().data = temp;
-            Debug.Log("swapped");
+            //Debug.Log("swapped");
             gameObject.GetComponent<blockControl>().reversebit = 1 - gameObject.GetComponent<blockControl>().reversebit;
 
             reColor();
@@ -70,7 +70,7 @@ public class blockControl : MonoBehaviour
 
         else
         {
-            Debug.Log("?????");
+            //Debug.Log("?????");
             reColor();
             other.GetComponent<blockControl>().reColor();
 

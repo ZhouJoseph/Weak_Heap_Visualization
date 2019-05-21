@@ -49,6 +49,7 @@ public class inputManager : MonoBehaviour
         dec1 = Convert.ToInt32(dec1str);
         dec2 = Convert.ToInt32(dec2str);
         list.GetComponent<list>().startdecrease(dec1, dec2);
+        tree.GetComponent<tree>().startdecrease(dec1, dec2);
     }
 
     void ExtractMin() {

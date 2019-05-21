@@ -57,7 +57,7 @@ public class tree : MonoBehaviour
 
     internal IEnumerator insert(int data)
     {
-        Debug.Log("here");
+        //Debug.Log("here");
         //get position of new node
         
         if (treerep.Count == 0)
@@ -66,6 +66,7 @@ public class tree : MonoBehaviour
             newNode = Instantiate(node, nextpos, Quaternion.identity);
             newNode.GetComponent<nodeControl>().data = data;
             treerep.Add(newNode);
+            newNode.GetComponent<nodeControl>().left = node;
 
             yield return new WaitForSeconds(1);
         }
@@ -82,7 +83,7 @@ public class tree : MonoBehaviour
             {
                 caseRight(x, y, z, h);
                 parent.GetComponent<nodeControl>().haver = 1;
-                parent.GetComponent<nodeControl>().right = node;
+                parent.GetComponent<nodeControl>().right = newNode;
             }
 
             else
@@ -93,14 +94,14 @@ public class tree : MonoBehaviour
                     {
                         //new = left
                         parent.GetComponent<nodeControl>().havel = 1;
-                        parent.GetComponent<nodeControl>().left = node;
+                        parent.GetComponent<nodeControl>().left = newNode;
                         caseLeft(x, y, z, h);
                     }
                     else
                     {
                         //new = right
                         parent.GetComponent<nodeControl>().haver = 1;
-                        parent.GetComponent<nodeControl>().right = node;
+                        parent.GetComponent<nodeControl>().right = newNode;
                         caseRight(x, y, z, h);
 
                     }
@@ -111,13 +112,13 @@ public class tree : MonoBehaviour
                     {
                         //new = right
                         parent.GetComponent<nodeControl>().haver = 1;
-                        parent.GetComponent<nodeControl>().right = node;
+                        parent.GetComponent<nodeControl>().right = newNode;
                         caseRight(x, y, z, h);
                     }
                     else
                     {
                         parent.GetComponent<nodeControl>().havel = 1;
-                        parent.GetComponent<nodeControl>().left = node;
+                        parent.GetComponent<nodeControl>().left = newNode;
                         //new = left
                         caseLeft(x, y, z, h);
                     }
@@ -130,8 +131,35 @@ public class tree : MonoBehaviour
             newNode.transform.parent = parent.transform;
             newNode.GetComponent<nodeControl>().data = data;
             treerep.Add(newNode);
-            Debug.Log(nextpos);
+            //Debug.Log(nextpos);
+            if (treerep.Count == 2)
+            {
+                parent.GetComponent<nodeControl>().right = newNode;
 
+            }
+            else if (parent.GetComponent<nodeControl>().reversebit == 1)
+            {
+                if(haveRight == 1)
+                {
+                    parent.GetComponent<nodeControl>().left = newNode;
+                }
+                else
+                {
+                    parent.GetComponent<nodeControl>().right = newNode;
+                }
+
+            }
+            else
+            {
+                if (haveLeft == 1)
+                {
+                    parent.GetComponent<nodeControl>().right = newNode;
+                }
+                else
+                {
+                    parent.GetComponent<nodeControl>().left = newNode;
+                }
+            }
             int currindex = 0;
             if (treerep.Count > 1)
             {
@@ -141,12 +169,13 @@ public class tree : MonoBehaviour
 
                     int dp = findDP(currindex);
 
-                    if (!node.GetComponent<nodeControl>().join(treerep[currindex], treerep[dp]))
+                    if (!newNode.GetComponent<nodeControl>().join(treerep[currindex], treerep[dp]))
                     {
                         break;
                     }
                     else
                     {
+                        
                         currindex = dp;
                         yield return new WaitForSeconds(1);
                     }
@@ -158,6 +187,34 @@ public class tree : MonoBehaviour
 
 
 
+    }
+    internal void startdecrease(int dec1, int dec2)
+    {
+        StartCoroutine(decrease(dec1, dec2));
+    }
+
+     internal IEnumerator decrease(int dec1, int dec2)
+    {
+        for (int i = 0; i < treerep.Count; i++)
+        {
+            int currindex = i;
+            int dp;
+            if(treerep[currindex].GetComponent<nodeControl>().data == dec1)
+            {
+                treerep[currindex].GetComponent<nodeControl>().data = dec2;
+                dp = findDP(currindex);
+                while (treerep[currindex].GetComponent<nodeControl>().join(treerep[currindex], treerep[dp]))
+                {
+                    currindex = dp;
+                    dp = findDP(currindex);
+                    yield return new WaitForSeconds(1.5f);
+                    if(currindex == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 }
